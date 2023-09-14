@@ -1,5 +1,8 @@
 app/models/CuentaBancaria.class
-udc/edu/ar/jsp_model2/resources/JakartaEE8Resource.class
+app/exceptions/CuentaNoExisteException.class
 app/controllers/TransferenciaServlet.class
+udc/edu/ar/jsp_model2/resources/JakartaEE8Resource.class
+app/exceptions/CuentaSaldoException.class
 app/controllers/IndexServlet.class
+app/exceptions/CuentaException.class
 udc/edu/ar/jsp_model2/JakartaRestConfiguration.class

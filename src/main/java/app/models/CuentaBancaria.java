@@ -120,13 +120,15 @@ public class CuentaBancaria implements Serializable {
             errores.getErrores().add(errorCuentaDestino);
         }
         
+        
+        
+        if (cuentaOrigen == cuentaDestino && cuentaOrigen != null && cuentaDestino != null)
+            errores.getErrores().add(new CuentasNoValidasException("Cuentas Origen y Destino son las mismas no se puede realizar una transferencia entre 2 cuentas iguales"));
+        
+        
         if(!errores.getErrores().isEmpty())
             throw errores;
         
-        
-        if (cuentaOrigen == cuentaDestino)
-            throw new CuentasNoValidasException("Cuentas Origen y Destino son las mismas no se puede realizar una transferencia entre 2 cuentas iguales");
-
     }
 
     public static void transferir(Map<String, String[]> mapaParametros) throws SaldoException{
@@ -143,7 +145,7 @@ public class CuentaBancaria implements Serializable {
         
         Double saldoFinalOrigen = origen.getSaldo() - montoTransferencia;
         
-        if(saldoFinalOrigen < origen.getDescubierto())
+        if(saldoFinalOrigen < origen.getDescubierto()*-1)
             throw new SaldoException("El monto que usted ingreso supera el descubierto de su cuenta (-$" + origen.getDescubierto() +")");
         
         origen.setSaldo(saldoFinalOrigen);

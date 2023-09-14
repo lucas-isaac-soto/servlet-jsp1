@@ -8,8 +8,10 @@ package app.exceptions;
  *
  * @author uniluk
  */
-public class CuentaNoExisteException extends CuentaException{
-    public CuentaNoExisteException(String error){
+public class SaldoException extends RuntimeException{
+
+    public SaldoException(String error) {
         super(error);
     }
+    
 }

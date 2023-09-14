@@ -1,5 +1,9 @@
 package app.models;
 
+import app.exceptions.CuentaException;
+import app.exceptions.CuentaNoExisteException;
+import app.exceptions.CuentasNoValidasException;
+import app.exceptions.SaldoException;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Map;
@@ -60,14 +64,14 @@ public class CuentaBancaria implements Serializable {
         return alias + " - " + numeroCuenta + " - " + saldo + " - " + descubierto;
     }
 
-    public static CuentaBancaria buscarCuenta(Integer codigoCuenta) {
+    //DEBE LANZAR UNA EXCEPCION
+    public static CuentaBancaria buscarCuenta(Integer codigoCuenta) throws CuentaNoExisteException {
         for (CuentaBancaria cuentaBuscada : CuentaBancaria.cuentasActivas) {
             if (cuentaBuscada.getNumeroCuenta() == codigoCuenta) {
                 return cuentaBuscada;
             }
         }
-        //ERROR CUENTA NO EXISTE
-        return null;
+        throw new CuentaNoExisteException("La cuenta numero " + codigoCuenta);
     }
 
     public static void rellenar() {
@@ -94,22 +98,57 @@ public class CuentaBancaria implements Serializable {
     }
 
     /*NO OLVIDAR TRATAR LA EXCEPCION*/
-    public static boolean validarTransferencia( Map<String,String> mapaParametros) {
+    public static void validarCuentas(Map<String, String[]> mapaParametros) throws RuntimeException {
+        CuentaException errores = new CuentaException();
+        CuentaBancaria cuentaOrigen = null;
+        CuentaBancaria cuentaDestino = null;
         
-        Integer numeroCuentaOrigen = Integer.valueOf(mapaParametros.get("origen"));
-        Integer numeroCuentaDestino = Integer.valueOf(mapaParametros.get("destino"));
-        Double montoTransferencia = Double.valueOf(mapaParametros.get("saldoTransferencia"));
+        //SI EL VALOR NO ES UN NUMERO VA A DAR UNA EXCEPTION
+        Integer numeroCuentaOrigen = Integer.valueOf(mapaParametros.get("cuentaOrigen")[0]);
+        Integer numeroCuentaDestino = Integer.valueOf(mapaParametros.get("cuentaDestino")[0]);
+        
+        //SI EL NUMERO ESTA BIEN PERO LA CUENTA NO EXISTE DA EXCEPTION
+        try {
+            cuentaOrigen = CuentaBancaria.buscarCuenta(numeroCuentaOrigen);
+        } catch (CuentaException errorCuentaOrigen) {
+            errores.getErrores().add(errorCuentaOrigen);
+        }
+
+        try {
+            cuentaDestino = CuentaBancaria.buscarCuenta(numeroCuentaDestino);
+        } catch (CuentaException errorCuentaDestino) {
+            errores.getErrores().add(errorCuentaDestino);
+        }
+        
+        if(!errores.getErrores().isEmpty())
+            throw errores;
         
         
-        CuentaBancaria cuentaOrigen = CuentaBancaria.buscarCuenta(numeroCuentaOrigen);
-        CuentaBancaria cuentaDestino = CuentaBancaria.buscarCuenta(numeroCuentaDestino);
-        
-        
-        
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (cuentaOrigen == cuentaDestino)
+            throw new CuentasNoValidasException("Cuentas Origen y Destino son las mismas no se puede realizar una transferencia entre 2 cuentas iguales");
+
     }
 
-    public void transferir() {
+    public static void transferir(Map<String, String[]> mapaParametros) throws SaldoException{
+        //PODRIA VERIFICAR CON UNA EXPRESION REGULAR QUE EL MONTO SEA NNNNN.NN MAX 2 DECIMALES
+        
+        CuentaBancaria origen = CuentaBancaria.buscarCuenta(Integer.valueOf(mapaParametros.get("cuentaOrigen")[0]) );
+        CuentaBancaria destino = CuentaBancaria.buscarCuenta(Integer.valueOf(mapaParametros.get("cuentaDestino")[0]));
+        
+        //VERIFICAR QUE TENGA SALDO SUFICIENTE LA CUENTA ORIGEN Y EL SALDO NO SEA NEGATIVO
+        Double montoTransferencia = Double.valueOf(mapaParametros.get("montoTransferencia")[0]);
+        
+        if(montoTransferencia <= 0)
+            throw new SaldoException("El monto que usted ingreso " + montoTransferencia +" es invalido debe ser mayor o igual a 1");
+        
+        Double saldoFinalOrigen = origen.getSaldo() - montoTransferencia;
+        
+        if(saldoFinalOrigen < origen.getDescubierto())
+            throw new SaldoException("El monto que usted ingreso supera el descubierto de su cuenta (-$" + origen.getDescubierto() +")");
+        
+        origen.setSaldo(saldoFinalOrigen);
+        destino.setSaldo(destino.getSaldo() + montoTransferencia);
+        
     }
 
 }

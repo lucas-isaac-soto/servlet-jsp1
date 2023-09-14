@@ -8,8 +8,8 @@ package app.exceptions;
  *
  * @author uniluk
  */
-public class CuentaNoExisteException extends CuentaException{
-    public CuentaNoExisteException(String error){
+public class CuentasNoValidasException extends CuentaException{
+    public CuentasNoValidasException(String error){
         super(error);
     }
 }

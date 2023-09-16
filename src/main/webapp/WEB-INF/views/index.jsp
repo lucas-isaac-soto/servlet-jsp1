@@ -34,6 +34,9 @@
                     
             </select>
             <br>
+            <label for="montoTransferencia">Monto a Transferir</label>
+            <input id="montoTransferencia" name="montoTransferencia" title="dinero" type="number" placeholder="0.00" step="0.01" min="1"  required="true">
+            
             <input type="submit" name="transferir" value="Transferir">
         </form>
         

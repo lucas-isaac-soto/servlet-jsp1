@@ -1,5 +1,17 @@
+<<<<<<< HEAD
 udc/edu/ar/jsp_model2/resources/JakartaEE8Resource.class
 app/models/CuentaBancaria.class
 app/controllers/IndexServlet.class
 app/controllers/TransferenciaServlet.class
+=======
+app/models/CuentaBancaria.class
+app/exceptions/CuentaNoExisteException.class
+app/controllers/TransferenciaServlet.class
+udc/edu/ar/jsp_model2/resources/JakartaEE8Resource.class
+app/exceptions/CuentasNoValidasException.class
+app/exceptions/CuentaSaldoException.class
+app/controllers/IndexServlet.class
+app/exceptions/SaldoException.class
+app/exceptions/CuentaException.class
+>>>>>>> 02e60180b2da459fbd595baa32c6de4f76a51918
 udc/edu/ar/jsp_model2/JakartaRestConfiguration.class

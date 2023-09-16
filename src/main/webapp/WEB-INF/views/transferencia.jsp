@@ -15,7 +15,7 @@
         <h1>Hello Transferencia!</h1>
         <p>A ${origen} ${cuentaOrigen}</p>
         <p>B ${destino} ${cuentaDestino}</p>
-
+        <p>C ${montoTransferencia}</p>
 
         <a href="${pageContext.request.contextPath}/">volver porfavor</a>        
     </body>
